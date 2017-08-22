@@ -1,0 +1,37 @@
+{
+    "name": "rygilles/laravel-openapi-schema-generator",
+    "description": "Generate OpenAPI schema from your Laravel Api project.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "OpenAPI",
+        "Schema",
+        "Laravel"
+    ],
+    "homepage": "http://github.com/rygilles/laravel-openapi-schema-generator",
+    "authors": [
+        {
+            "name": "Ryan Gilles",
+            "email": "ryan@e-monsite.com"
+        }
+    ],
+    "minimum-stability": "dev",
+	"require": {
+		"php": ">=5.5.0",
+		"laravel/framework": "~5.4",
+		"phpdocumentor/reflection-docblock": "^3.2"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "~4.0 || ~5.0"
+	},
+	"autoload": {
+		"psr-0": {
+			"Rygilles\\OpenApiGenerator": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Rygilles\\OpenApiGenerator\\Tests\\": "tests/"
+		}
+	}
+}
