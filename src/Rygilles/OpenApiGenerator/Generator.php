@@ -2,12 +2,32 @@
 
 namespace Rygilles\OpenApiGenerator;
 
+use Illuminate\Console\Command;
 use phpDocumentor\Reflection\DocBlockFactory;
 use ReflectionClass;
+use Rygilles\OpenApiGenerator\OpenApi\Document;
+use Rygilles\OpenApiGenerator\OpenApi\OpenAPI;
 
 
 class Generator
 {
+	/**
+	 * The parent command object
+	 *
+	 * @var Command
+	 */
+	protected $parentCommand = null;
+
+	/**
+	 * Return defined parent command object
+	 *
+	 * @return Command|null
+	 */
+	public function getParentCommand()
+	{
+		return $this->parentCommand;
+	}
+
 	/**
 	 * DocBlockFactory for doc block analysis
 	 *
@@ -23,13 +43,25 @@ class Generator
 	protected $identifiedSchemas = [];
 
 	/**
+	 * Root document object pf the OpenAPI document
+	 *
+	 * @var OpenAPI
+	 */
+	protected $openAPI;
+
+	/**
 	 * Create a new command instance.
 	 *
-	 * @return void
+	 * @param DocBlockFactory $docBlockFactory
+	 * @param Command $parentCommand
 	 */
-	public function __construct(DocBlockFactory $docBlockFactory)
+	public function __construct(DocBlockFactory $docBlockFactory, Command $parentCommand)
 	{
 		$this->docBlockFactory = $docBlockFactory;
+		$this->parentCommand = $parentCommand;
+		$this->openAPI = new OpenAPI();
+		echo($this->openAPI . "\n");
+		die();
 	}
 
 	/**
@@ -56,7 +88,7 @@ class Generator
 		dd($routeGroup);
 		//$routeDescription = $this->getRouteDescription($routeAction['uses']);
 
-		//$this->info('Route');
+		//$this->parentCommand->info('Route');
 	}
 
 	/**
@@ -67,8 +99,8 @@ class Generator
 	 */
 	protected function getRouteGroup($route)
 	{
-		if (!config('apischemas.model_tag')) {
-			$this->error('The "mode_tag" value in your apischemas.php configuration file must defined.');
+		if (!config('openapischemas.model_tag')) {
+			$this->parentCommand->error('The "model_tag" value in your apischemas.php configuration file must defined.');
 			exit();
 		}
 
@@ -78,7 +110,7 @@ class Generator
 		if ($comment) {
 			$docBlock = $this->docBlockFactory->create($comment);
 			foreach ($docBlock->getTags() as $tag) {
-				if ($tag->getName() === config('apischemas.model_tag')) {
+				if ($tag->getName() === config('openapischemas.model_tag')) {
 					return $tag->getDescription()->render();
 				}
 			}

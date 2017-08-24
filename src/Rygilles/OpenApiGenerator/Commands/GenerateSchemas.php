@@ -51,7 +51,7 @@ class GenerateSchemas extends Command
 	public function handle()
 	{
 		$docBlockFactory = DocBlockFactory::createInstance();
-		$this->generator = new Generator($docBlockFactory);
+		$this->generator = new Generator($docBlockFactory, $this);
 		$routes = $this->getRoutes();
 		$this->generator->processRoutes($routes);
 	}
