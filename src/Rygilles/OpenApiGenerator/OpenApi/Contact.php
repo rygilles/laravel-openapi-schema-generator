@@ -33,4 +33,25 @@ class Contact extends Object
 	 * @var string
 	 */
 	public $email;
+
+	/**
+	 * {@inheritdoc}
+	 */
+	protected $requiredAttributes = [
+		'openapi',
+		'info',
+		'paths'
+	];
+
+	/**
+	 * {@inheritdoc}
+	 */
+	protected function getFixedAttributes()
+	{
+		return [
+			'name'  => $this->name,
+			'url'   => $this->url,
+			'email' => $this->email,
+		];
+	}
 }
