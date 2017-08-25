@@ -20,7 +20,7 @@ class OpenAPI extends Object
 	 *
 	 * @var string
 	 */
-	public $openapi;
+	public $openapi = '3.0.0';
 
 	/**
 	 * Provides metadata about the API. The metadata MAY be used by tooling as required. (REQUIRED)

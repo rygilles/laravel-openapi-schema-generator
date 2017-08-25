@@ -50,10 +50,26 @@ class GenerateSchemas extends Command
 	 */
 	public function handle()
 	{
+		$profiles = config('openapischemas.profiles');
+		$possibleProfiles = array_keys($profiles);
+
+		if (count($possibleProfiles) > 1) {
+			$profileName = $this->choice('For which profile ?', $possibleProfiles);
+		} else {
+			$profileName = 'default';
+		}
+
+		$profile = $profiles[$profileName];
+
 		$docBlockFactory = DocBlockFactory::createInstance();
-		$this->generator = new Generator($docBlockFactory, $this);
+		$this->generator = new Generator($docBlockFactory, $profile, $this);
+		
+		$this->generator->applyProfileBindings();
+		
 		$routes = $this->getRoutes();
 		$this->generator->processRoutes($routes);
+
+		file_put_contents($profile['output'], $this->generator->generateJSON());
 	}
 
 	/**

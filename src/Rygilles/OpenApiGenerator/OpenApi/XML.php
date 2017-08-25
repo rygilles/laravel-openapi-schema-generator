@@ -44,7 +44,7 @@ class XML extends Object
 	 *
 	 * @var boolean
 	 */
-	public $attribute = false;
+	public $attribute;
 
 	/**
 	 * MAY be used only for an array definition.

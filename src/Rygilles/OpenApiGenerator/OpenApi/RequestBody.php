@@ -35,7 +35,7 @@ class RequestBody extends Object
 	 *
 	 * @var boolean
 	 */
-	public $required = false;
+	public $required;
 
 	/**
 	 * {@inheritdoc}

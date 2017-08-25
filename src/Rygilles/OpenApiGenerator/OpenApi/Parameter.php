@@ -53,7 +53,7 @@ class Parameter extends Object
 	 *
 	 * @var boolean
 	 */
-	public $required = false;
+	public $required;
 
 	/**
 	 * Specifies that a parameter is deprecated and SHOULD be transitioned out of usage.
@@ -70,7 +70,7 @@ class Parameter extends Object
 	 *
 	 * @var boolean
 	 */
-	public $allowEmptyValue = false;
+	public $allowEmptyValue;
 
 	/**
 	 * Describes how the parameter value will be serialized depending on the type of the parameter value.
@@ -101,7 +101,7 @@ class Parameter extends Object
 	 *
 	 * @var boolean
 	 */
-	public $allowReserved = false;
+	public $allowReserved;
 
 	/**
 	 * The schema defining the type used for the parameter.
@@ -147,7 +147,6 @@ class Parameter extends Object
 	protected $requiredAttributes = [
 		'name',
 		'in',
-		'required',
 	];
 
 	/**

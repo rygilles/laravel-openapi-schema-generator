@@ -46,9 +46,14 @@ class JSONSchema extends Object
 	public $exclusiveMinimum;
 
 	/**
-	 * @var float
+	 * @var int
 	 */
 	public $maxLength;
+
+	/**
+	 * @var int
+	 */
+	public $minLength;
 
 	/**
 	 * @var string
@@ -81,7 +86,7 @@ class JSONSchema extends Object
 	public $minProperties;
 
 	/**
-	 * @var boolean
+	 * @var string[]
 	 */
 	public $required;
 
@@ -89,14 +94,7 @@ class JSONSchema extends Object
 	 * @var string[]
 	 */
 	public $enum;
-
-	/**
-	 * {@inheritdoc}
-	 */
-	protected $requiredAttributes = [
-		'title'
-	];
-
+	
 	/**
 	 * {@inheritdoc}
 	 */
@@ -110,7 +108,7 @@ class JSONSchema extends Object
 			'minimum'           => $this->minimum,
 			'exclusiveMinimum'  => $this->exclusiveMinimum,
 			'maxLength'         => $this->maxLength,
-			'pattern '          => $this->pattern ,
+			'pattern'           => $this->pattern ,
 			'maxItems'          => $this->maxItems,
 			'minItems'          => $this->minItems,
 			'uniqueItems'       => $this->uniqueItems,

@@ -23,7 +23,7 @@ class Schema extends JSONSchema
 	 *
 	 * @var boolean
 	 */
-	public $nullable = false;
+	public $nullable;
 
 	/**
 	 * Adds support for polymorphism.
@@ -45,7 +45,7 @@ class Schema extends JSONSchema
 	 *
 	 * @var boolean
 	 */
-	public $readOnly = false;
+	public $readOnly;
 
 	/**
 	 * Relevant only for Schema "properties" definitions. Declares the property as "write only".
@@ -57,7 +57,7 @@ class Schema extends JSONSchema
 	 *
 	 * @var boolean
 	 */
-	public $writeOnly = false;
+	public $writeOnly ;
 
 	/**
 	 * This MAY be used only on properties schemas. It has no effect on root schemas.
@@ -88,7 +88,7 @@ class Schema extends JSONSchema
 	 *
 	 * @var bool
 	 */
-	public $deprecated = false;
+	public $deprecated;
 
 	/**
 	 * The following properties are taken from the JSON Schema definition but their definitions were adjusted to the OpenAPI Specification.
@@ -142,7 +142,7 @@ class Schema extends JSONSchema
 	/**
 	 * Property definitions MUST be a Schema Object and not a standard JSON Schema (inline or referenced).
 	 *
-	 * @var Schema|Reference
+	 * @var (Schema|Reference)[]
 	 */
 	public $properties;
 
@@ -181,13 +181,6 @@ class Schema extends JSONSchema
 	/**
 	 * {@inheritdoc}
 	 */
-	protected $requiredAttributes = [
-		'title'
-	];
-
-	/**
-	 * {@inheritdoc}
-	 */
 	protected function getFixedAttributes()
 	{
 		return [
@@ -199,7 +192,8 @@ class Schema extends JSONSchema
 			'minimum'               => $this->minimum,
 			'exclusiveMinimum'      => $this->exclusiveMinimum,
 			'maxLength'             => $this->maxLength,
-			'pattern '              => $this->pattern ,
+			'minLength'             => $this->minLength,
+			'pattern'               => $this->pattern ,
 			'maxItems'              => $this->maxItems,
 			'minItems'              => $this->minItems,
 			'uniqueItems'           => $this->uniqueItems,

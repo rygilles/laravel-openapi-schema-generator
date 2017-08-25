@@ -122,7 +122,7 @@ class Operation extends Object
 	 *
 	 * @var boolean
 	 */
-	public $deprecated = false;
+	public $deprecated;
 
 	/**
 	 * A declaration of which security mechanisms can be used for this operation.

@@ -1,5 +1,7 @@
 <?php
 
+use Rygilles\OpenApiGenerator\OpenApi\Info;
+
 return [
 
 	/*
@@ -19,7 +21,7 @@ return [
 	| Open API Schemas Generator : Routes prefix
 	|--------------------------------------------------------------------------
 	|
-	| Define your Api routes prefix ("v1" commonly)
+	| Define your Api routes prefix ("v1" commonly).
 	|
 	*/
 
@@ -30,7 +32,7 @@ return [
 	| Open API Schemas Generator : Models namespace
 	|--------------------------------------------------------------------------
 	|
-	| Define your models namespace ("App" commonly)
+	| Define your models namespace ("App" commonly).
 	|
 	*/
 
@@ -58,7 +60,7 @@ return [
 	| If you need to generate different schemas according to users rights :
 	| Copy the default entry and edit the name and values.
 	| The command execution will ask you which profile you want to generate
-	| if there is more than one profile in this array
+	| if there is more than one profile in this array.
 	|
 	*/
 
@@ -68,24 +70,72 @@ return [
 
 			/*
 			|--------------------------------------------------------------------------
-			| Output folder
+			| Output
 			|--------------------------------------------------------------------------
 			|
-			| The root folder where the schemas will be generated
+			| The path where the json schema file will be generated.
 			|
 			*/
-			'output_folder' => realpath(base_path('public/docs/openapi/default')),
+			'output' => (base_path('public/docs/openapi/default.json')),
 
 			/*
 			|--------------------------------------------------------------------------
-			| Base url
+			| Bindings
 			|--------------------------------------------------------------------------
 			|
-			| The base url of your schemas entry point (eg.: http://mywebsite.com/schemas/)
-			| This value will be used to generate schemas id property
+			| Define fixed bindings of the Open API document here.
 			|
 			*/
-			"base_url" => '',
+			'bindings' => [
+
+				/*
+				|--------------------------------------------------------------------------
+				| info
+				|--------------------------------------------------------------------------
+				|
+				| Define values related to Info Object here.
+				| Fields with null value will be ignored.
+				| 'title' and 'version' fields are mandatory.
+				| @see https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#infoObject
+				|
+				*/
+
+				'info' => new Info([
+					'title' => '', // REQUIRED
+					/*
+					'description' => null,
+					'termsOfService' => null,
+					'contact' => new \Rygilles\OpenApiGenerator\OpenApi\Contact([
+						'name'  => 'API support',
+						'url'   => 'http://www.example.com/support',
+						'email' => 'support@example.com',
+					]),
+					'license' => new \Rygilles\OpenApiGenerator\OpenApi\License([
+						'name' => 'Apache 2.0', // REQUIRED
+						'url' => 'http://www.apache.org/licenses/LICENSE-2.0.html'
+					]),
+					*/
+					'version' => '1.0', // REQUIRED
+				]),
+
+				/*
+				'servers' => [
+					new \Rygilles\OpenApiGenerator\OpenApi\Server([
+						'url' => 'myapp.com/api'
+					])
+				],
+				*/
+
+				/*
+				'components' => new \Rygilles\OpenApiGenerator\OpenApi\Components([
+					'schemas' => [
+						'YourSchemaId' => new \Rygilles\OpenApiGenerator\OpenApi\Schema([
+							...
+						])
+					]
+				]),
+				*/
+			],
 
 		]
 

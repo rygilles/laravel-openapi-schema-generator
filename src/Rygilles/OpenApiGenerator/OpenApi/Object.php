@@ -2,6 +2,7 @@
 
 namespace Rygilles\OpenApiGenerator\OpenApi;
 
+use ErrorException;
 use JsonSerializable;
 use Rygilles\OpenApiGenerator\OpenApi\Contracts\Arrayable;
 use Rygilles\OpenApiGenerator\OpenApi\Contracts\Jsonable;
@@ -29,6 +30,20 @@ abstract class Object implements Arrayable, Jsonable, JsonSerializable
 	 * @var mixed[]
 	 */
 	protected $specificationExtensions = [];
+
+	/**
+	 * Object constructor.
+	 *
+	 * @param mixed[] $attributes Object attributes map
+	 */
+	public function __construct($attributes = [])
+	{
+		foreach ($attributes as $k => $v) {
+			if (!is_null($v)) {
+				$this->$k = $v;
+			}
+		}
+	}
 
 	/**
 	 * Return an array of attributes
@@ -107,7 +122,7 @@ abstract class Object implements Arrayable, Jsonable, JsonSerializable
 	 */
 	public function __toString()
 	{
-		return $this->toJson();
+		return $this->toJson(JSON_PRETTY_PRINT);
 	}
 
 	/**
@@ -115,19 +130,19 @@ abstract class Object implements Arrayable, Jsonable, JsonSerializable
 	 *
 	 * @param string $key
 	 * @return mixed
+	 * @throws ErrorException
 	 */
 	public function __get($key)
 	{
-		if (isset($this->$key)) {
-			return $this->$key;
-		}
 		if (isset($this->specificationExtensions[$key])) {
 			return $this->specificationExtensions[$key];
 		}
+
+		throw new ErrorException('Undefined property: ' . static::class . '::$' . $key);
 	}
 
 	/**
-	 * Dynamically set attributes on the model.
+	 * Dynamically set attributes on the object.
 	 *
 	 * @param string $key
 	 * @param mixed $value
@@ -152,6 +167,9 @@ abstract class Object implements Arrayable, Jsonable, JsonSerializable
 	{
 		if (isset($this->$key) && (!is_null($this->$key))) {
 			return true;
+		}
+		if (!isset($this->specificationExtensions[$key])) {
+			return false;
 		}
 		return !is_null($this->specificationExtensions[$key]);
 	}
