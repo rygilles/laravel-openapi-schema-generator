@@ -32,4 +32,22 @@ class Discriminator extends Object
 	 * @var string[]
 	 */
 	public $mapping;
+
+	/**
+	 * {@inheritdoc}
+	 */
+	protected $requiredAttributes = [
+		'propertyName'
+	];
+
+	/**
+	 * {@inheritdoc}
+	 */
+	protected function getFixedAttributes()
+	{
+		return [
+			'propertyName'      => $this->propertyName,
+			'mapping'           => $this->mapping
+		];
+	}
 }

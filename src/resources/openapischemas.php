@@ -53,6 +53,28 @@ return [
 
 	/*
 	|--------------------------------------------------------------------------
+	| Open API Schemas Generator : Auth Provider
+	|--------------------------------------------------------------------------
+	|
+	| User provider to use for the "act as user" feature.
+	| Pick the right name from your config/auth.php file (default is "users")
+	|
+	*/
+	'auth_provider' => 'users',
+
+	/*
+	|--------------------------------------------------------------------------
+	| Open API Schemas Generator : Auth Guard
+	|--------------------------------------------------------------------------
+	|
+	| Auth guard to use for the "act as user" feature.
+	| default is "web"
+	|
+	*/
+	'auth_guard' => 'web',
+
+	/*
+	|--------------------------------------------------------------------------
 	| Open API Schemas Generator : Profiles
 	|--------------------------------------------------------------------------
 	|
@@ -70,6 +92,16 @@ return [
 
 			/*
 			|--------------------------------------------------------------------------
+			| Act As User Id
+			|--------------------------------------------------------------------------
+			|
+			| Act as user Id for Api calls
+			|
+			*/
+			'act_as_user_id' => 'your-user-id',
+
+			/*
+			|--------------------------------------------------------------------------
 			| Output
 			|--------------------------------------------------------------------------
 			|
@@ -80,13 +112,65 @@ return [
 
 			/*
 			|--------------------------------------------------------------------------
-			| Bindings
+			| Api Calls Bindings
+			|--------------------------------------------------------------------------
+			|
+			| Array of fixed bindings for routes calls (for example responses)
+			| Each entry is an array
+			|
+			*/
+			'api_calls_bindings' => [
+
+				[
+					/*
+					|--------------------------------------------------------------------------
+					| Routes Aliases
+					|--------------------------------------------------------------------------
+					|
+					| Array of routes aliases concerned
+					|
+					*/
+					'routes_aliases' => [
+						'myResource.get',
+						'myOtherRoute.show'
+					],
+
+					/*
+					|--------------------------------------------------------------------------
+					| Bindings
+					|--------------------------------------------------------------------------
+					|
+					| Array of routes aliases concerned
+					|
+					*/
+					'bindings' => [
+
+						[
+							/* Can be "query-route", "query-injected" or "body"
+							 * "query-route" will replace the {values} of your route
+							 * "query-injected" will add the value in the query string ?name=value
+							 * "body" will add the binding as a form field (for PUT/PATCH/POST routes)
+							 */
+							'in' => 'query-route',
+							'name' => 'myParameterName',
+							'value' => 'myValue'
+						]
+
+					]
+
+				]
+
+			],
+
+			/*
+			|--------------------------------------------------------------------------
+			| Open API Bindings
 			|--------------------------------------------------------------------------
 			|
 			| Define fixed bindings of the Open API document here.
 			|
 			*/
-			'bindings' => [
+			'openapi_bindings' => [
 
 				/*
 				|--------------------------------------------------------------------------
