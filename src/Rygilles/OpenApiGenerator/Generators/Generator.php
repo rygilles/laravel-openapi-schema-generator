@@ -303,6 +303,8 @@ abstract class Generator
 				}
 			}
 
+			// First response
+
 			$response = new Response();
 			$responseMediaType = null;
 
@@ -321,8 +323,8 @@ abstract class Generator
 			$response->description = '';
 			$apiResponseDescriptionTags = $routeMethodDocBlock->getTagsByName('OpenApiResponseDescription');
 			if (count($apiResponseDescriptionTags) > 0) {
-				$apiProfileResponseDescriptionTag = $apiResponseDescriptionTags[0];
-				$apiResponseDescription = trim(ltrim($apiProfileResponseDescriptionTag->render(), '@OpenApiResponseDescription'));
+				$apiResponseDescriptionTag = $apiResponseDescriptionTags[0];
+				$apiResponseDescription = trim(ltrim($apiResponseDescriptionTag->render(), '@OpenApiResponseDescription'));
 				$response->description = $apiResponseDescription;
 			}
 
@@ -373,6 +375,37 @@ abstract class Generator
 					$operation->responses['204'] = $response;
 					break;
 			}
+
+			// Default response (Errors)
+
+			$defaultResponse = new Response();
+			$defaultResponseMediaType = null;
+
+			$apiDefaultResponseSchemaRefTags = $routeMethodDocBlock->getTagsByName('OpenApiDefaultResponseSchemaRef');
+			if (count($apiDefaultResponseSchemaRefTags) > 0) {
+				if (is_null($responseMediaType)) {
+					$defaultResponseMediaType = new MediaType();
+				}
+				$apiDefaultResponseSchemaRefTag = $apiDefaultResponseSchemaRefTags[0];
+				$apiDefaultResponseSchemaRef = trim(ltrim($apiDefaultResponseSchemaRefTag->render(), '@OpenApiDefaultResponseSchemaRef'));
+				$defaultResponseMediaType->schema = new Reference([
+					'ref' => $apiDefaultResponseSchemaRef
+				]);
+			}
+
+			$defaultResponse->description = '';
+			$apiDefaultResponseDescriptionTags = $routeMethodDocBlock->getTagsByName('OpenApiDefaultResponseDescription');
+			if (count($apiDefaultResponseDescriptionTags) > 0) {
+				$apiDefaultResponseDescriptionTag = $apiResponseDescriptionTags[0];
+				$apiDefaultResponseDescription = trim(ltrim($apiDefaultResponseDescriptionTag->render(), '@OpenApiDefaultResponseDescription'));
+				$defaultResponse->description = $apiDefaultResponseDescription;
+			}
+
+			if (!is_null($defaultResponseMediaType)) {
+				$defaultResponse->content['application/json'] = $responseMediaType;
+			}
+
+			$operation->responses['default'] = $defaultResponse;
 
 			$pathItem->{strtolower($httpMethod)} = $operation;
 		}
