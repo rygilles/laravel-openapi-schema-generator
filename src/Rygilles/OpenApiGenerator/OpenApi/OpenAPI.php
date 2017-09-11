@@ -75,7 +75,7 @@ class OpenAPI extends Object
 	 * For other security scheme types,the array MUST be empty.
 	 *
 	 * @see https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#securityRequirementObject
-	 * @var string[]
+	 * @var string[][]
 	 */
 	public $security;
 

@@ -11,7 +11,7 @@ namespace Rygilles\OpenApiGenerator\OpenApi;
  *
  * @package Rygilles\OpenApiGenerator\OpenApi
  */
-class OAuthFlow extends Object
+abstract class OAuthFlow extends Object
 {
 	/**
 	 * The authorization URL to be used for this flow. This MUST be in the form of a URL. (REQUIRED)
@@ -37,7 +37,7 @@ class OAuthFlow extends Object
 	/**
 	 * The available scopes for the OAuth2 security scheme. A map between the scope name and a short description for it. (REQUIRED)
 	 *
-	 * @var string
+	 * @var string[]
 	 */
 	public $scopes;
 
@@ -45,8 +45,6 @@ class OAuthFlow extends Object
 	 * {@inheritdoc}
 	 */
 	protected $requiredAttributes = [
-		'authorizationUrl',
-		'tokenUrl',
 		'scopes'
 	];
 	
@@ -59,7 +57,7 @@ class OAuthFlow extends Object
 			'authorizationUrl'  => $this->authorizationUrl,
 			'tokenUrl'          => $this->tokenUrl,
 			'refreshUrl'        => $this->refreshUrl,
-			'scopes'            => $this->scopes
+			'scopes'            => (object) $this->scopes
 		];
 	}
 }

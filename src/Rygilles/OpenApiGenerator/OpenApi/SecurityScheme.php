@@ -80,12 +80,30 @@ class SecurityScheme extends Object
 	 */
 	protected $requiredAttributes = [
 		'type',
-		'name',
-		'in',
-		'scheme',
-		'flows',
-		'openIdConnectUrl'
 	];
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getRequiredAttributes()
+	{
+		switch ($this->type) {
+			case 'apiKey':
+				return ['type', 'name', 'in'];
+				break;
+			case 'http':
+				return ['type', 'scheme'];
+				break;
+			case 'oauth2':
+				return ['type', 'flows'];
+				break;
+			case 'openIdConnect':
+				return ['type', 'openIdConnectUrl'];
+				break;
+			default:
+				return $this->requiredAttributes;
+		}
+	}
 
 	/**
 	 * {@inheritdoc}

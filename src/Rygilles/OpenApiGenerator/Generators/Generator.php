@@ -91,6 +91,10 @@ abstract class Generator
 	{
 		$this->openAPI->info = $this->profile['openapi_bindings']['info'];
 
+		if (isset($this->profile['openapi_bindings']['security'])) {
+			$this->openAPI->security = $this->profile['openapi_bindings']['security'];
+		}
+
 		if (isset($this->profile['openapi_bindings']['servers'])) {
 			$this->openAPI->servers = $this->profile['openapi_bindings']['servers'];
 		}
@@ -137,6 +141,9 @@ abstract class Generator
 
 		$this->getParentCommand()->info('Processing route [' . implode('/', $route->methods()) . '] ' . $routeAction['uri']);
 
+		$routeControllerDocBlock = $this->getRouteControllerDocBlock($route);
+		$routeControllerOperationTags = $this->getDocBlockOperationTags($routeControllerDocBlock);
+
 		foreach ($route->methods() as $httpMethod) {
 			// Ignore HEAD
 
@@ -149,7 +156,6 @@ abstract class Generator
 			} else {
 				$pathItem = $this->openAPI->paths[$routeAction['uri']] = new PathItem();
 
-				$routeControllerDocBlock = $this->getRouteControllerDocBlock($route);
 				if (!is_null($routeControllerDocBlock)) {
 					$pathItem->summary = $routeControllerDocBlock->getSummary();
 					if (empty($pathItem->summary)) {
@@ -165,7 +171,10 @@ abstract class Generator
 
 			$operation = new Operation();
 
+			$operationTags = $routeControllerOperationTags;
+
 			$routeMethodDocBlock = $this->getRouteMethodDocBlock($route);
+
 			if (!is_null($routeMethodDocBlock)) {
 				$operation->summary = $routeMethodDocBlock->getSummary();
 				if (empty($operation->summary)) {
@@ -176,6 +185,53 @@ abstract class Generator
 				if (empty($operation->description)) {
 					$operation->description = null;
 				}
+				$routeMethodOperationTags = $this->getDocBlockOperationTags($routeMethodDocBlock);
+
+				$operationTags = array_merge($routeControllerOperationTags, $routeMethodOperationTags);
+
+				$operation->operationId = $this->getDocBlockOperationId($routeMethodDocBlock);
+			}
+
+			if (is_null($operation->operationId)) {
+				switch (strtolower($httpMethod)) {
+					case 'patch':
+					case 'put':
+						$operation->operationId = strtolower($httpMethod) . ucfirst(array_last(explode('.', $routeAction['as'])));
+						break;
+					default :
+						$operation->operationId = array_last(explode('.', $routeAction['as']));
+				}
+			}
+
+			if (count($operationTags) > 0) {
+				$operation->tags = $operationTags;
+			}
+
+			// Try
+			$routePathParameters = $this->getRoutePathParameters($route);
+
+			foreach ($routePathParameters as $parameterName => $parameterData) {
+				$parameterDescription = isset($parameterData['docDescription']) ? $parameterData['docDescription'] : '';
+				if (trim($parameterDescription) == '') {
+					$parameterDescription = null;
+				}
+				$parameter = new Parameter([
+					'name' => $parameterName,
+					'in' => 'path',
+					'description' => $parameterDescription,
+					'required' => true,
+				]);
+				if (isset($parameterData['type'])) {
+					$parameter->schema = new Schema([
+						'type' => $parameterData['type']
+					]);
+				}
+				if (isset($parameterData['docType'])) {
+					$parameter->schema = new Schema([
+						'type' => $parameterData['docType']
+					]);
+				}
+				$operation->parameters[] = $parameter;
 			}
 
 			// Try to get route validation rules
@@ -185,8 +241,6 @@ abstract class Generator
 				switch (strtolower($httpMethod)) {
 					case 'get':
 					//case 'head':
-
-						$operation->parameters = [];
 
 						foreach ($routeValidationRules as $parameterName => $rulesString) {
 							$rules = explode('|', $rulesString);
@@ -202,7 +256,21 @@ abstract class Generator
 								$rules,
 								'Validation rules for parameter "' . $parameterName . '"'
 							);
-							$operation->parameters[] = $parameter;
+
+							// Add if not already added from the "path" parameters
+							$find = false;
+							if (is_null($operation->parameters)) {
+								$operation->parameters = [];
+							}
+							/** @var Parameter $p */
+							foreach ($operation->parameters as $p) {
+								if ($p->name == $parameter->name) {
+									$find = true;
+								}
+							}
+							if (!$find) {
+								$operation->parameters[] = $parameter;
+							}
 						}
 
 						break;
@@ -238,24 +306,24 @@ abstract class Generator
 			$response = new Response();
 			$responseMediaType = null;
 
-			$apiProfileResponseSchemaRefTags = $routeMethodDocBlock->getTagsByName('ApiProfileResponseSchemaRef');
-			if (count($apiProfileResponseSchemaRefTags) > 0) {
+			$apiResponseSchemaRefTags = $routeMethodDocBlock->getTagsByName('OpenApiResponseSchemaRef');
+			if (count($apiResponseSchemaRefTags) > 0) {
 				if (is_null($responseMediaType)) {
 					$responseMediaType = new MediaType();
 				}
-				$apiProfileResponseSchemaRefTag = $apiProfileResponseSchemaRefTags[0];
-				$apiProfileResponseSchemaRef = trim(ltrim($apiProfileResponseSchemaRefTag->render(), '@ApiProfileResponseSchemaRef'));
+				$apiResponseSchemaRefTag = $apiResponseSchemaRefTags[0];
+				$apiResponseSchemaRef = trim(ltrim($apiResponseSchemaRefTag->render(), '@OpenApiResponseSchemaRef'));
 				$responseMediaType->schema = new Reference([
-					'ref' => $apiProfileResponseSchemaRef
+					'ref' => $apiResponseSchemaRef
 				]);
 			}
-
+			
 			$response->description = '';
-			$apiProfileResponseDescriptionTags = $routeMethodDocBlock->getTagsByName('ApiProfileResponseDescription');
-			if (count($apiProfileResponseDescriptionTags) > 0) {
-				$apiProfileResponseDescriptionTag = $apiProfileResponseDescriptionTags[0];
-				$apiProfileResponseDescription = trim(ltrim($apiProfileResponseDescriptionTag->render(), '@ApiProfileResponseDescription'));
-				$response->description = $apiProfileResponseDescription;
+			$apiResponseDescriptionTags = $routeMethodDocBlock->getTagsByName('OpenApiResponseDescription');
+			if (count($apiResponseDescriptionTags) > 0) {
+				$apiProfileResponseDescriptionTag = $apiResponseDescriptionTags[0];
+				$apiResponseDescription = trim(ltrim($apiProfileResponseDescriptionTag->render(), '@OpenApiResponseDescription'));
+				$response->description = $apiResponseDescription;
 			}
 
 			$apiDocsNoCallTags = $routeMethodDocBlock->getTagsByName('ApiDocsNoCall');
@@ -305,8 +373,50 @@ abstract class Generator
 					$operation->responses['204'] = $response;
 					break;
 			}
+
 			$pathItem->{strtolower($httpMethod)} = $operation;
 		}
+	}
+
+	/**
+	 * Return the OpenAPI Operation Id from a doc block or null if not found.
+	 *
+	 * @param DocBlock $docBlock
+	 * @return string|null
+	 */
+	protected function getDocBlockOperationId($docBlock)
+	{
+		$apiOperationIdTags = $docBlock->getTagsByName('OpenApiOperationId');
+		if (count($apiOperationIdTags) > 0) {
+			$apiOperationIdTag = $apiOperationIdTags[0];
+			$apiOperationId = trim(ltrim($apiOperationIdTag->render(), '@OpenApiOperationId'));
+			return $apiOperationId;
+		}
+
+		return null;
+	}
+
+	/**
+	 * Return the OpenAPI Operation Tags from a doc block.
+	 *
+	 * @param DocBlock $docBlock
+	 * @return string[]
+	 */
+	protected function getDocBlockOperationTags($docBlock)
+	{
+		$apiOperationTagTags = $docBlock->getTagsByName('OpenApiOperationTag');
+		foreach ($apiOperationTagTags as $apiOperationTagTag) {
+			$apiOperationTag = trim(ltrim($apiOperationTagTag->render(), '@OpenApiOperationTag'));
+			if (strstr($apiOperationTag, '[')) {
+				$tags = str_replace(['[', ']'], '', $apiOperationTag);
+				$tags = explode(',', $tags);
+				$tags = array_map('trim', $tags);
+				return $tags;
+			}
+			return [trim($apiOperationTag)];
+		}
+
+		return [];
 	}
 
 	/**
@@ -466,6 +576,57 @@ abstract class Generator
 	}
 
 	/**
+	 * Try to get route method path parameters
+	 *
+	 * @param \Illuminate\Routing\Route $route
+	 * @return mixed[]
+	 */
+	protected function getRoutePathParameters($route)
+	{
+		$parameters = [];
+
+		$routeAction = $route->getAction();
+		list($class, $method) = explode('@', $routeAction['uses']);
+
+		$reflection = new ReflectionClass($class);
+		$reflectionMethod = $reflection->getMethod($method);
+
+		foreach ($reflectionMethod->getParameters() as $parameter) {
+			$reflectionType = $parameter->getType();
+			// Only scalar types or undefined types
+			if (is_null($reflectionType) || $reflectionType->isBuiltin()) {
+				$parameters[$parameter->getName()] = [
+					'name' => $parameter->getName(),
+				];
+				if (!is_null($reflectionType) && $reflectionType->isBuiltin()) {
+					$parameters[$parameter->getName()]['type'] = (string)$parameter->getType();
+				}
+			}
+		}
+
+		if (count($parameters) > 0) {
+			// Inject the related phpdoc if exists.
+			$comment = $reflectionMethod->getDocComment();
+			if ($comment) {
+				$docBlock = $this->docBlockFactory->create($comment);
+				foreach ($docBlock->getTagsByName('param') as $tag) {
+					foreach ($parameters as $parameterName => $parameter) {
+						if ($tag->getVariableName() == $parameterName) {
+							$docDescription = $tag->getDescription()->render();
+							/** @var \ReflectionType $reflectionType */
+							$reflectionType = $tag->getType();
+							$parameters[$parameterName]['docType'] = (string)$reflectionType;
+							$parameters[$parameterName]['docDescription'] = $docDescription;
+						}
+					}
+				}
+			}
+		}
+
+		return $parameters;
+	}
+
+	/**
 	 * Try to get route validation rules if an instance of class/sub class of FormRequest is injected in the route method.
 	 *
 	 * @param \Illuminate\Routing\Route $route
@@ -500,32 +661,32 @@ abstract class Generator
 	}
 
 	/**
-	 * Return route group
+	 * Return route model/resource name or null if nothing found.
 	 *
 	 * @param string $route
-	 * @return string
+	 * @return string|null
 	 */
-	protected function getRouteGroup($route)
+	protected function getRouteResource($route)
 	{
-		if (!config('openapischemas.model_tag')) {
-			$this->parentCommand->error('The "model_tag" value in your apischemas.php configuration file must defined.');
+		if (!config('openapischemas.resource_tag')) {
+			$this->parentCommand->error('The "resource_tag" value in your apischemas.php configuration file must defined.');
 			exit();
 		}
-
-		list($class, $method) = explode('@', $route);
+		$routeAction = $route->getAction();
+		list($class, $method) = explode('@', $routeAction['uses']);
 		$reflection = new ReflectionClass($class);
 
 		$comment = $reflection->getDocComment();
 		if ($comment) {
 			$docBlock = $this->docBlockFactory->create($comment);
 			foreach ($docBlock->getTags() as $tag) {
-				if ($tag->getName() === config('openapischemas.model_tag')) {
+				if ($tag->getName() === config('openapischemas.resource_tag')) {
 					return $tag->getDescription()->render();
 				}
 			}
 		}
 
-		return 'general';
+		return null;
 	}
 
 	/**
