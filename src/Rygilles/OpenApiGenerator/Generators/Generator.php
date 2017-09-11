@@ -402,7 +402,7 @@ abstract class Generator
 			}
 
 			if (!is_null($defaultResponseMediaType)) {
-				$defaultResponse->content['application/json'] = $responseMediaType;
+				$defaultResponse->content['application/json'] = $defaultResponseMediaType;
 			}
 
 			$operation->responses['default'] = $defaultResponse;
