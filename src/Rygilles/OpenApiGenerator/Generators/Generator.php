@@ -383,7 +383,7 @@ abstract class Generator
 
 			$apiDefaultResponseSchemaRefTags = $routeMethodDocBlock->getTagsByName('OpenApiDefaultResponseSchemaRef');
 			if (count($apiDefaultResponseSchemaRefTags) > 0) {
-				if (is_null($responseMediaType)) {
+				if (is_null($defaultResponseMediaType)) {
 					$defaultResponseMediaType = new MediaType();
 				}
 				$apiDefaultResponseSchemaRefTag = $apiDefaultResponseSchemaRefTags[0];
