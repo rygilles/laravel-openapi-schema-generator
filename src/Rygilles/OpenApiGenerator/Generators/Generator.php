@@ -494,9 +494,9 @@ abstract class Generator
 	protected function getDocBlockExtraParameterRefTags($docBlock)
 	{
 		$results = [];
-		$apiExtraParameterRefTags = $docBlock->getTagsByName('OpenApiExtraParameterRefTag');
+		$apiExtraParameterRefTags = $docBlock->getTagsByName('OpenApiExtraParameterRef');
 		foreach ($apiExtraParameterRefTags as $apiExtraParameterRefTag) {
-			$apiExtraParameterRef = trim(str_replace('@OpenApiExtraParameterRefTag', '',$apiExtraParameterRefTag->render()));
+			$apiExtraParameterRef = trim(str_replace('@OpenApiExtraParameterRef', '',$apiExtraParameterRefTag->render()));
 			$results[] = $apiExtraParameterRef;
 		}
 
