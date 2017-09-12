@@ -496,7 +496,8 @@ abstract class Generator
 		$results = [];
 		$apiExtraParameterRefTags = $docBlock->getTagsByName('OpenApiExtraParameterRef');
 		foreach ($apiExtraParameterRefTags as $apiExtraParameterRefTag) {
-			$apiExtraParameterRef = trim(str_replace('@OpenApiExtraParameterRef', '',$apiExtraParameterRefTag->render()));
+			die($apiExtraParameterRefTag->render());
+			$apiExtraParameterRef = trim(str_replace('@OpenApiExtraParameterRef', '', $apiExtraParameterRefTag->render()));
 			$results[] = $apiExtraParameterRef;
 		}
 
