@@ -190,6 +190,9 @@ abstract class Generator
 
 				$operationTags = array_merge($routeControllerOperationTags, $routeMethodOperationTags);
 				$extraParameterRefTags = $this->getDocBlockExtraParameterRefTags($routeControllerDocBlock);
+				if (count($extraParameterRefTags) > 0) {
+					die(print_r($extraParameterRefTags, true));
+				}
 
 				$operation->operationId = $this->getDocBlockOperationId($routeMethodDocBlock);
 			}
