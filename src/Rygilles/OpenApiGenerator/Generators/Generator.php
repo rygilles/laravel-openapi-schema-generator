@@ -275,20 +275,6 @@ abstract class Generator
 							}
 						}
 
-						// Append extra parameter refs
-
-						foreach ($extraParameterRefTags as $extraParameterRefTag) {
-							$parameterRef = new Reference([
-								'ref' => $extraParameterRefTag
-							]);
-
-							if (is_null($operation->parameters)) {
-								$operation->parameters = [];
-							}
-
-							$operation->parameters[] = $parameterRef;
-						}
-
 						break;
 
 					case 'put':
@@ -317,6 +303,20 @@ abstract class Generator
 
 						break;
 				}
+			}
+
+			// Append extra parameter refs
+
+			foreach ($extraParameterRefTags as $extraParameterRefTag) {
+				$parameterRef = new Reference([
+					'ref' => $extraParameterRefTag
+				]);
+
+				if (is_null($operation->parameters)) {
+					$operation->parameters = [];
+				}
+
+				$operation->parameters[] = $parameterRef;
 			}
 
 			// First response
@@ -492,8 +492,8 @@ abstract class Generator
 	{
 		$results = [];
 		$apiExtraParameterRefTags = $docBlock->getTagsByName('OpenApiExtraParameterRef');
+
 		foreach ($apiExtraParameterRefTags as $apiExtraParameterRefTag) {
-			die($apiExtraParameterRefTag->render());
 			$apiExtraParameterRef = trim(str_replace('@OpenApiExtraParameterRef', '', $apiExtraParameterRefTag->render()));
 			$results[] = $apiExtraParameterRef;
 		}
