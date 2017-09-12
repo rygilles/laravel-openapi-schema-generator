@@ -174,6 +174,7 @@ abstract class Generator
 			$operationTags = $routeControllerOperationTags;
 
 			$routeMethodDocBlock = $this->getRouteMethodDocBlock($route);
+			$extraParameterRefTags = [];
 
 			if (!is_null($routeMethodDocBlock)) {
 				$operation->summary = $routeMethodDocBlock->getSummary();
@@ -188,6 +189,7 @@ abstract class Generator
 				$routeMethodOperationTags = $this->getDocBlockOperationTags($routeMethodDocBlock);
 
 				$operationTags = array_merge($routeControllerOperationTags, $routeMethodOperationTags);
+				$extraParameterRefTags = $this->getDocBlockExtraParameterRefTags($routeControllerDocBlock);
 
 				$operation->operationId = $this->getDocBlockOperationId($routeMethodDocBlock);
 			}
@@ -273,6 +275,20 @@ abstract class Generator
 							}
 						}
 
+						// Append extra parameter refs
+
+						foreach ($extraParameterRefTags as $extraParameterRefTag) {
+							$parameterRef = new Reference([
+								'ref' => $extraParameterRefTag
+							]);
+
+							if (is_null($operation->parameters)) {
+								$operation->parameters = [];
+							}
+
+							$operation->parameters[] = $parameterRef;
+						}
+
 						break;
 
 					case 'put':
@@ -314,7 +330,7 @@ abstract class Generator
 					$responseMediaType = new MediaType();
 				}
 				$apiResponseSchemaRefTag = $apiResponseSchemaRefTags[0];
-				$apiResponseSchemaRef = trim(ltrim($apiResponseSchemaRefTag->render(), '@OpenApiResponseSchemaRef'));
+				$apiResponseSchemaRef = trim(str_replace('@OpenApiResponseSchemaRef', '', $apiResponseSchemaRefTag->render()));
 				$responseMediaType->schema = new Reference([
 					'ref' => $apiResponseSchemaRef
 				]);
@@ -324,7 +340,7 @@ abstract class Generator
 			$apiResponseDescriptionTags = $routeMethodDocBlock->getTagsByName('OpenApiResponseDescription');
 			if (count($apiResponseDescriptionTags) > 0) {
 				$apiResponseDescriptionTag = $apiResponseDescriptionTags[0];
-				$apiResponseDescription = trim(ltrim($apiResponseDescriptionTag->render(), '@OpenApiResponseDescription'));
+				$apiResponseDescription = trim(str_replace('@OpenApiResponseDescription', '', $apiResponseDescriptionTag->render()));
 				$response->description = $apiResponseDescription;
 			}
 
@@ -387,7 +403,7 @@ abstract class Generator
 					$defaultResponseMediaType = new MediaType();
 				}
 				$apiDefaultResponseSchemaRefTag = $apiDefaultResponseSchemaRefTags[0];
-				$apiDefaultResponseSchemaRef = trim(ltrim($apiDefaultResponseSchemaRefTag->render(), '@OpenApiDefaultResponseSchemaRef'));
+				$apiDefaultResponseSchemaRef = trim(str_replace('@OpenApiDefaultResponseSchemaRef', '', $apiDefaultResponseSchemaRefTag->render()));
 				$defaultResponseMediaType->schema = new Reference([
 					'ref' => $apiDefaultResponseSchemaRef
 				]);
@@ -397,7 +413,7 @@ abstract class Generator
 			$apiDefaultResponseDescriptionTags = $routeMethodDocBlock->getTagsByName('OpenApiDefaultResponseDescription');
 			if (count($apiDefaultResponseDescriptionTags) > 0) {
 				$apiDefaultResponseDescriptionTag = $apiResponseDescriptionTags[0];
-				$apiDefaultResponseDescription = trim(ltrim($apiDefaultResponseDescriptionTag->render(), '@OpenApiDefaultResponseDescription'));
+				$apiDefaultResponseDescription = trim(str_replace('@OpenApiDefaultResponseDescription', '', $apiDefaultResponseDescriptionTag->render()));
 				$defaultResponse->description = $apiDefaultResponseDescription;
 			}
 
@@ -422,7 +438,7 @@ abstract class Generator
 		$apiOperationIdTags = $docBlock->getTagsByName('OpenApiOperationId');
 		if (count($apiOperationIdTags) > 0) {
 			$apiOperationIdTag = $apiOperationIdTags[0];
-			$apiOperationId = trim(ltrim($apiOperationIdTag->render(), '@OpenApiOperationId'));
+			$apiOperationId = trim(str_replace('@OpenApiOperationId', '',$apiOperationIdTag->render()));
 			return $apiOperationId;
 		}
 
@@ -439,7 +455,7 @@ abstract class Generator
 	{
 		$apiOperationTagTags = $docBlock->getTagsByName('OpenApiOperationTag');
 		foreach ($apiOperationTagTags as $apiOperationTagTag) {
-			$apiOperationTag = trim(ltrim($apiOperationTagTag->render(), '@OpenApiOperationTag'));
+			$apiOperationTag = trim(str_replace('@OpenApiOperationTag', '',$apiOperationTagTag->render()));
 			if (strstr($apiOperationTag, '[')) {
 				$tags = str_replace(['[', ']'], '', $apiOperationTag);
 				$tags = explode(',', $tags);
@@ -464,6 +480,24 @@ abstract class Generator
 		$alias = studly_case(str_replace('.', '_', $routeAction['as']));
 
 		return $alias . 'ExampleResponse';
+	}
+
+	/**
+	 * Return the OpenAPI Extra Parameter Ref Tags from a doc block.
+	 *
+	 * @param DocBlock $docBlock
+	 * @return string[]
+	 */
+	protected function getDocBlockExtraParameterRefTags($docBlock)
+	{
+		$results = [];
+		$apiExtraParameterRefTags = $docBlock->getTagsByName('OpenApiExtraParameterRefTag');
+		foreach ($apiExtraParameterRefTags as $apiExtraParameterRefTag) {
+			$apiExtraParameterRef = trim(str_replace('@OpenApiExtraParameterRefTag', '',$apiExtraParameterRefTag->render()));
+			$results[] = $apiExtraParameterRef;
+		}
+
+		return $results;
 	}
 
 	/**
