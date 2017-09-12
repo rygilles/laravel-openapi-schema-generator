@@ -189,10 +189,7 @@ abstract class Generator
 				$routeMethodOperationTags = $this->getDocBlockOperationTags($routeMethodDocBlock);
 
 				$operationTags = array_merge($routeControllerOperationTags, $routeMethodOperationTags);
-				$extraParameterRefTags = $this->getDocBlockExtraParameterRefTags($routeControllerDocBlock);
-				if (count($extraParameterRefTags) > 0) {
-					die(print_r($extraParameterRefTags, true));
-				}
+				$extraParameterRefTags = $this->getDocBlockExtraParameterRefTags($routeMethodOperationTags);
 
 				$operation->operationId = $this->getDocBlockOperationId($routeMethodDocBlock);
 			}
@@ -496,7 +493,6 @@ abstract class Generator
 		$results = [];
 		$apiExtraParameterRefTags = $docBlock->getTagsByName('OpenApiExtraParameterRef');
 		foreach ($apiExtraParameterRefTags as $apiExtraParameterRefTag) {
-			die($apiExtraParameterRefTag->render());
 			$apiExtraParameterRef = trim(str_replace('@OpenApiExtraParameterRef', '', $apiExtraParameterRefTag->render()));
 			$results[] = $apiExtraParameterRef;
 		}
