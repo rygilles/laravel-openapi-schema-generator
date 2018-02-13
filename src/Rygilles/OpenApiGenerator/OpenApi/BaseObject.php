@@ -14,7 +14,7 @@ use Rygilles\OpenApiGenerator\OpenApi\Exceptions\JsonEncodingException;
  *
  * @package Rygilles\OpenApiGenerator\OpenApi
  */
-abstract class Object implements Arrayable, Jsonable, JsonSerializable
+abstract class BaseObject implements Arrayable, Jsonable, JsonSerializable
 {
 	/**
 	 * Array of required attributes keys of the object
@@ -25,7 +25,7 @@ abstract class Object implements Arrayable, Jsonable, JsonSerializable
 
 	/**
 	 * This object MAY be extended with Specification Extensions.
-	 * 
+	 *
 	 * @see https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.0.md#specificationExtensions
 	 * @var mixed[]
 	 */

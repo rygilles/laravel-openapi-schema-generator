@@ -17,7 +17,7 @@ namespace Rygilles\OpenApiGenerator\OpenApi;
  *
  * @package Rygilles\OpenApiGenerator\OpenApi
  */
-class Discriminator extends Object
+class Discriminator extends BaseObject
 {
 	/**
 	 * The name of the property in the payload that will hold the discriminator value. (REQUIRED)

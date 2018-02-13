@@ -11,7 +11,7 @@ namespace Rygilles\OpenApiGenerator\OpenApi;
  *
  * @package Rygilles\OpenApiGenerator\OpenApi
  */
-class XML extends Object
+class XML extends BaseObject
 {
 	/**
 	 * Replaces the name of the element/attribute used for the described schema property.

@@ -14,7 +14,7 @@ namespace Rygilles\OpenApiGenerator\OpenApi;
  *
  * @package Rygilles\OpenApiGenerator\OpenApi
  */
-class PathItem extends Object
+class PathItem extends BaseObject
 {
 	/**
 	 * Allows for an external definition of this path item.

@@ -11,7 +11,7 @@ namespace Rygilles\OpenApiGenerator\OpenApi;
  *
  * @package Rygilles\OpenApiGenerator\OpenApi
  */
-class ExternalDocumentation extends Object
+class ExternalDocumentation extends BaseObject
 {
 	/**
 	 * A short description of the target documentation.

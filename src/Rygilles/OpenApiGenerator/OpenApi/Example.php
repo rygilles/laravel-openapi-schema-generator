@@ -15,7 +15,7 @@ namespace Rygilles\OpenApiGenerator\OpenApi;
  *
  * @package Rygilles\OpenApiGenerator\OpenApi
  */
-class Example extends Object
+class Example extends BaseObject
 {
 	/**
 	 * Short description for the example.

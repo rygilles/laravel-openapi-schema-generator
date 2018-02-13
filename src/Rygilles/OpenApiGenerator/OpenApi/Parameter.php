@@ -13,7 +13,7 @@ namespace Rygilles\OpenApiGenerator\OpenApi;
  *
  * @package Rygilles\OpenApiGenerator\OpenApi
  */
-class Parameter extends Object
+class Parameter extends BaseObject
 {
 	/**
 	 * The name of the parameter. Parameter names are case sensitive. (REQUIRED)

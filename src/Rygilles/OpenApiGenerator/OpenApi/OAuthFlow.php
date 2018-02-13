@@ -11,7 +11,7 @@ namespace Rygilles\OpenApiGenerator\OpenApi;
  *
  * @package Rygilles\OpenApiGenerator\OpenApi
  */
-abstract class OAuthFlow extends Object
+abstract class OAuthFlow extends BaseObject
 {
 	/**
 	 * The authorization URL to be used for this flow. This MUST be in the form of a URL. (REQUIRED)

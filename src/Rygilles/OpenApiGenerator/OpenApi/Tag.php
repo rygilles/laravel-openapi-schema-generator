@@ -11,7 +11,7 @@ namespace Rygilles\OpenApiGenerator\OpenApi;
  *
  * @package Rygilles\OpenApiGenerator\OpenApi
  */
-class Tag extends Object
+class Tag extends BaseObject
 {
 	/**
 	 * The name of the tag. (REQUIRED)

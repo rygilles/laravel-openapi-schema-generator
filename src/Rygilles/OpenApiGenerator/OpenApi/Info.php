@@ -13,7 +13,7 @@ namespace Rygilles\OpenApiGenerator\OpenApi;
  *
  * @package Rygilles\OpenApiGenerator\OpenApi
  */
-class Info extends Object
+class Info extends BaseObject
 {
 	/**
 	 * The title of the application. (REQUIRED)
