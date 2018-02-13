@@ -11,7 +11,7 @@ namespace Rygilles\OpenApiGenerator\OpenApi;
  *
  * @package Rygilles\OpenApiGenerator\OpenApi
  */
-class OAuthFlows extends Object
+class OAuthFlows extends BaseObject
 {
 	/**
 	 * Configuration for the OAuth Implicit flow

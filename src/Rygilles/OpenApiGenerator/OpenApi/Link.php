@@ -19,7 +19,7 @@ namespace Rygilles\OpenApiGenerator\OpenApi;
  *
  * @package Rygilles\OpenApiGenerator\OpenApi
  */
-class Link extends Object
+class Link extends BaseObject
 {
 	/**
 	 * A relative or absolute reference to an OAS operation.

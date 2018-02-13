@@ -13,7 +13,7 @@ namespace Rygilles\OpenApiGenerator\OpenApi;
  *
  * @package Rygilles\OpenApiGenerator\OpenApi
  */
-class Reference extends Object
+class Reference extends BaseObject
 {
 	/**
 	 * The reference string. (REQUIRED)

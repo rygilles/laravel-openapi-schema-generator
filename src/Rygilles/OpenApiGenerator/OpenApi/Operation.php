@@ -11,7 +11,7 @@ namespace Rygilles\OpenApiGenerator\OpenApi;
  *
  * @package Rygilles\OpenApiGenerator\OpenApi
  */
-class Operation extends Object
+class Operation extends BaseObject
 {
 	/**
 	 * A list of tags for API documentation control.

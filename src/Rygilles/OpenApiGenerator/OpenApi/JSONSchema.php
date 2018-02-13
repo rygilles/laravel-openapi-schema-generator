@@ -13,7 +13,7 @@ namespace Rygilles\OpenApiGenerator\OpenApi;
  *
  * @package Rygilles\OpenApiGenerator\OpenApi
  */
-class JSONSchema extends Object
+class JSONSchema extends BaseObject
 {
 	/**
 	 * @var string

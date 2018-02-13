@@ -13,7 +13,7 @@ namespace Rygilles\OpenApiGenerator\OpenApi;
  *
  * @package Rygilles\OpenApiGenerator\OpenApi
  */
-class Components extends Object
+class Components extends BaseObject
 {
 	/**
 	 * An object to hold reusable Schema Objects.

@@ -11,7 +11,7 @@ namespace Rygilles\OpenApiGenerator\OpenApi;
  *
  * @package Rygilles\OpenApiGenerator\OpenApi
  */
-class OpenAPI extends Object
+class OpenAPI extends BaseObject
 {
 	/**
 	 * This string MUST be the semantic version number of the OpenAPI Specification version that the OpenAPI document uses.

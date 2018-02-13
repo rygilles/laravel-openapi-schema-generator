@@ -11,7 +11,7 @@ namespace Rygilles\OpenApiGenerator\OpenApi;
  *
  * @package Rygilles\OpenApiGenerator\OpenApi
  */
-class Server extends Object
+class Server extends BaseObject
 {
 	/**
 	 * A URL to the target host.

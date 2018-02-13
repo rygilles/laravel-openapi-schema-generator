@@ -11,7 +11,7 @@ namespace Rygilles\OpenApiGenerator\OpenApi;
  *
  * @package Rygilles\OpenApiGenerator\OpenApi
  */
-class RequestBody extends Object
+class RequestBody extends BaseObject
 {
 	/**
 	 * A brief description of the request body. This could contain examples of use.

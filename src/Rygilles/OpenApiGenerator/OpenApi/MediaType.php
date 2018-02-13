@@ -12,7 +12,7 @@ namespace Rygilles\OpenApiGenerator\OpenApi;
  *
  * @package Rygilles\OpenApiGenerator\OpenApi
  */
-class MediaType extends Object
+class MediaType extends BaseObject
 {
 	/**
 	 * The schema defining the type used for the request body.

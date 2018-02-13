@@ -11,7 +11,7 @@ namespace Rygilles\OpenApiGenerator\OpenApi;
  *
  * @package Rygilles\OpenApiGenerator\OpenApi
  */
-class ServerVariable extends Objects
+class ServerVariable extends BaseObjects
 {
 	/**
 	 * An enumeration of string values to be used if the substitution options are from a limited set.

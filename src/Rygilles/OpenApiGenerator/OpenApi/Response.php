@@ -11,7 +11,7 @@ namespace Rygilles\OpenApiGenerator\OpenApi;
  *
  * @package Rygilles\OpenApiGenerator\OpenApi
  */
-class Response extends Object
+class Response extends BaseObject
 {
 	/**
 	 * A short description of the response.

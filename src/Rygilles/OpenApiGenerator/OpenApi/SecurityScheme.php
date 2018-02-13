@@ -15,7 +15,7 @@ namespace Rygilles\OpenApiGenerator\OpenApi;
  *
  * @package Rygilles\OpenApiGenerator\OpenApi
  */
-class SecurityScheme extends Object
+class SecurityScheme extends BaseObject
 {
 	/**
 	 * The type of the security scheme. Valid values are "apiKey", "http", "oauth2", "openIdConnect". (REQUIRED)

@@ -11,7 +11,7 @@ namespace Rygilles\OpenApiGenerator\OpenApi;
  *
  * @package Rygilles\OpenApiGenerator\OpenApi
  */
-class Encoding extends Object
+class Encoding extends BaseObject
 {
 	/**
 	 * The Content-Type for encoding a specific property.

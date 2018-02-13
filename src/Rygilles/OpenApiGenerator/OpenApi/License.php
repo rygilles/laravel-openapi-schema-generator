@@ -11,7 +11,7 @@ namespace Rygilles\OpenApiGenerator\OpenApi;
  *
  * @package Rygilles\OpenApiGenerator\OpenApi
  */
-class License extends Object
+class License extends BaseObject
 {
 	/**
 	 * The license name used for the API. (REQUIRED)

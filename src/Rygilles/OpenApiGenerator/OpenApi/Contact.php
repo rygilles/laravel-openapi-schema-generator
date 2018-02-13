@@ -11,7 +11,7 @@ namespace Rygilles\OpenApiGenerator\OpenApi;
  *
  * @package Rygilles\OpenApiGenerator\OpenApi
  */
-class Contact extends Object
+class Contact extends BaseObject
 {
 	/**
 	 * The identifying name of the contact person/organization.
