@@ -373,23 +373,38 @@ abstract class Generator
 			if (!is_null($responseMediaType)) {
 				$response->content['application/json'] = $responseMediaType;
 			}
+			
+			// Excepted HTTP code specified ? "OpenApiResponseExceptedHTTPCode" tag
+			
+			$apiResponseExceptedHTTPCode = null;
+			$apiResponseExceptedHTTPCodeTags = $routeMethodDocBlock->getTagsByName('OpenApiResponseExceptedHTTPCode');
+			if (count($apiResponseExceptedHTTPCodeTags) > 0) {
+				$apiResponseExceptedHTTPCodeTag = $apiResponseExceptedHTTPCodeTags[0];
+				$apiResponseExceptedHTTPCode = trim(str_replace('@OpenApiResponseExceptedHTTPCode', '', $apiResponseExceptedHTTPCodeTag->render()));
+			}
 
-			switch (strtolower($httpMethod)) {
-				// @todo different HTTP code ?
-				case 'get':
-				//case 'head':
-					$operation->responses['200'] = $response;
-					break;
-
-				case 'put':
-				case 'patch':
-				case 'post':
-					$operation->responses['201'] = $response;
-					break;
-
-				case 'delete':
-					$operation->responses['204'] = $response;
-					break;
+			if (!is_null($apiResponseExceptedHTTPCode)) {
+				$operation->responses[$apiResponseExceptedHTTPCode] = $response;
+			} else {
+				switch (strtolower($httpMethod)) {
+					case 'get':
+						//case 'head':
+						$operation->responses['200'] = $response;
+						break;
+					
+					case 'put':
+					case 'patch':
+						$operation->responses['200'] = $response;
+						break;
+						
+					case 'post':
+						$operation->responses['201'] = $response;
+						break;
+					
+					case 'delete':
+						$operation->responses['204'] = $response;
+						break;
+				}
 			}
 
 			// Default response (Errors)
