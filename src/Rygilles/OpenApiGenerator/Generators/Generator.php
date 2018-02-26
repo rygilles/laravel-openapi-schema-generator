@@ -394,6 +394,9 @@ abstract class Generator
 					
 					case 'put':
 					case 'patch':
+						$operation->responses['200'] = $response;
+						break;
+						
 					case 'post':
 						$operation->responses['201'] = $response;
 						break;
