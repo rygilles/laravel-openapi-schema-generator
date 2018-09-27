@@ -256,11 +256,13 @@ abstract class Generator
 
 							$parameter->schema = $this->getPropertyValidationRulesSchema(
 								$rules,
-								'Validation rules for parameter "' . $parameterName . '"'
+								'Validation rules for parameter "' . $parameterName . '"',
+								true
 							);
 							
 							if (is_null($parameter->schema->format)) {
 								// ignore this parameter if no type found
+								$this->getParentCommand()->warn('  Ignore parameter "' . $parameterName . '"');
 								continue;
 							}
 
@@ -295,11 +297,13 @@ abstract class Generator
 							$rules = explode('|', $rulesString);
 							$schema = $this->getPropertyValidationRulesSchema(
 								$rules,
-								'Validation rules for parameter "' . $parameterName . '"'
+								'Validation rules for parameter "' . $parameterName . '"',
+								true
 							);
 							
 							// ignore this property if no type found
 							if (is_null($schema->type)) {
+								$this->getParentCommand()->warn('  Ignore parameter "' . $parameterName . '"');
 								continue;
 							}
 							
@@ -566,10 +570,11 @@ abstract class Generator
 	 *
 	 * @param string[] $propertyRules Array of property rules
 	 * @param string $errorContext Information on context if an error occurs
+	 * @param boolean $logCommandError
 	 * @return Schema
 	 * @throws ErrorException
 	 */
-	protected function getPropertyValidationRulesSchema($propertyRules, $errorContext)
+	protected function getPropertyValidationRulesSchema($propertyRules, $errorContext, $logCommandError = false)
 	{
 		$schema = new Schema();
 
@@ -672,6 +677,10 @@ abstract class Generator
 					*/
 					break;
 			}
+		}
+		
+		if ($logCommandError && is_null($schema->type)) {
+			$this->getParentCommand()->error($errorContext . "\n" . '  Unknown parameter type, rules : "' . implode(',', $propertyRules) . '"');
 		}
 
 		return $schema;
