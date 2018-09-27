@@ -258,6 +258,11 @@ abstract class Generator
 								$rules,
 								'Validation rules for parameter "' . $parameterName . '"'
 							);
+							
+							if (is_null($parameter->schema->format)) {
+								// ignore this parameter if no type found
+								continue;
+							}
 
 							// Add if not already added from the "path" parameters
 							$find = false;
@@ -288,10 +293,17 @@ abstract class Generator
 
 						foreach ($routeValidationRules as $parameterName => $rulesString) {
 							$rules = explode('|', $rulesString);
-							$mediaType->schema->properties[$parameterName] = $this->getPropertyValidationRulesSchema(
+							$schema = $this->getPropertyValidationRulesSchema(
 								$rules,
 								'Validation rules for parameter "' . $parameterName . '"'
 							);
+							
+							// ignore this property if no type found
+							if (is_null($schema->type)) {
+								continue;
+							}
+							
+							$mediaType->schema->properties[$parameterName] = $schema;
 						}
 
 						$mediaType->schema->required = $this->getValidationRulesSchemaRequired($routeValidationRules);
@@ -534,7 +546,14 @@ abstract class Generator
 				$explodedRule = explode(':', $rule);
 				$ruleName = $explodedRule[0];
 				if ($ruleName == 'required') {
-					$required[] = $propertyName;
+					// Check if type is handled
+					$schema = $this->getPropertyValidationRulesSchema(
+						$propertyRules,
+						'Validation rules for property "' . $propertyName . '"'
+					);
+					if (!is_null($schema->type)) {
+						$required[] = $propertyName;
+					}
 				}
 			}
 		}
