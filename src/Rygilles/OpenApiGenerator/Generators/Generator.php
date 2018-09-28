@@ -293,6 +293,9 @@ abstract class Generator
 						$mediaType->schema = new Schema();
 						$mediaType->schema->properties = [];
 
+						// Change to multi-part if file in parameters ("string" type and "binary" format)
+						$contentType = 'application/json';
+						
 						foreach ($routeValidationRules as $parameterName => $rulesString) {
 							$rules = explode('|', $rulesString);
 							$schema = $this->getPropertyValidationRulesSchema(
@@ -307,12 +310,19 @@ abstract class Generator
 								continue;
 							}
 							
+							// Change to multi-part if file in parameters ("string" type and "binary" format)
+							if ($schema->type == 'string' && $schema->format == 'binary') {
+								$contentType = 'multipart/form-data';
+								// Change mediaType schema type
+								$mediaType->schema->type = 'object';
+							}
+							
 							$mediaType->schema->properties[$parameterName] = $schema;
 						}
 
 						$mediaType->schema->required = $this->getValidationRulesSchemaRequired($routeValidationRules);
 
-						$requestBody->content['application/json'] = $mediaType;
+						$requestBody->content[$contentType] = $mediaType;
 						$operation->requestBody = $requestBody;
 
 						$operation->responses = [];
@@ -675,6 +685,11 @@ abstract class Generator
 			            (/?|/\S+|\?\S*|\#\S*)                   # a /, nothing, a / with something, a query or a fragment
 			        $~ixu';
 					*/
+					break;
+				case 'image':
+				case 'file':
+					$schema->type = 'string';
+					$schema->format = 'binary';
 					break;
 			}
 		}
